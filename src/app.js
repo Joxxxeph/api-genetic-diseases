@@ -17,6 +17,7 @@ app.use('/api/v1', geneticDiseases)
 
 
 
-app.listen(3000, () => {
-    console.log(`Server runing on port http://localhost:${3000}`);
-})
+
+
+
+module.exports = app;

@@ -1,53 +1,95 @@
-// definición de funciones
-exports.findAll = (req, res) => {
+const GeneticDiseasesServices = require("./genetic-diseases.service")
 
-    const {requestT, saludo1} = req
+// definición de funciones
+exports.findAll = async (req, res) => {
+
+    const {requestT} = req
+
+    const geneticDiseases = await GeneticDiseasesServices.findAll()
 
     return res.status(200).json({
-        message: 'method get - findAll',
         requestT,
-        saludo1
+        geneticDiseases
     })
 }
 
-exports.create = (req, res) => {
-    const disease = req.body
-    const { enfermedad, especie, raza } = req.body
+exports.create = async (req, res) => {
+    const {requestT} = req
+    const { name, description, mortalityRate, treatment, symptoms } = req.body
 
-    console.log(enfermedad);
+    const geneticDiseases = await GeneticDiseasesServices.create({
+      name,
+      description,
+      mortalityRate,
+      treatment,
+      symptoms,
+    });
 
     return res.status(201).json({
-        message: 'method post - create',
-        data: req.body
+        requestT,
+        data: geneticDiseases,
+        
     })
 }
 
-exports.getOne = (req, res) => {
-    console.log(req.params);
+exports.getOne = async (req, res) => {
+    const {id} = req.params;
+    const {requestT} = req
+    const geneticDisease = await GeneticDiseasesServices.findOne(id)
+    if(!geneticDisease) {
+        return res.status(404).json({
+            status: 'error',
+            message: `Genetic Disease with id: ${id} not found`
+        })
+    }
     return res.status(200).json({
-        message: "method get - findOne",
+        requestT,
+        geneticDisease,
         id: req.params.id
     })
 }
 
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     const { id } = req.params
-    const {saludo1} = req
+    const {requestT} = req
+    const {name, description} = req.body
+
+    const geneticDisease = await GeneticDiseasesServices.findOne(id) 
+
+    if (!geneticDisease) {
+        return res.status(404).json({
+            status: 'error',
+            message: `Genetic Disease with id: ${id} not found`
+        })
+    }
+
+    const geneticDiseaseUpdate = await GeneticDiseasesServices.update(geneticDisease, {
+      name,
+      description,
+    });
+
     return res.status(200).json({
-        message: "method patch - update",
-        id,
-        saludo1
+        requestT,
+        geneticDiseaseUpdate    
     })
 }
 
-exports.deleteOne = (req, res) => {
+exports.deleteOne = async (req, res) => {
+    const {requestT} = req
     const { id } = req.params
-    const { saludo2 } = req
-    return res.status(200).json({
-        message: "method delete - delete",
-        id,
-        saludo2
-    })
+    
+    const geneticDisease = await GeneticDiseasesServices.findOne(id)
+
+    if (!geneticDisease) {
+        return res.status(404).json({
+            status: 'error',
+            message: `Genetic Disease with id: ${id} not found`
+        })
+    }
+
+    await GeneticDiseasesServices.delete(geneticDisease)
+
+    return res.status(204).json(null)
 }
 
 
