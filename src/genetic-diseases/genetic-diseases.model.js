@@ -12,6 +12,10 @@ const GenerticDiseases = sequelize.define('genetic_diseases', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    specie: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     description: {
         type: DataTypes.STRING,
         allowNull: false,

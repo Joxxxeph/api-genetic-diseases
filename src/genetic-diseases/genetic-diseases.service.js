@@ -2,11 +2,19 @@ const GeneticDiseases = require('./genetic-diseases.model')
 
 class GeneticDiseasesServices {
 
-    static async findAll(){
-        return await GeneticDiseases.findAll({
-            where: {
-                status: 'active'
+    static async findAll(specie){
+        let whereCondition = {
+            status: 'active'
+        }
+        if (specie) {
+            whereCondition = {
+                status: 'active',
+                specie
             }
+        }
+        return await GeneticDiseases.findAll({
+            where: whereCondition,
+            attributes: ['name']
         })
     }
 
